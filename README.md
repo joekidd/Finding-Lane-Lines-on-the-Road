@@ -2,7 +2,12 @@
 
 An implementation of the first project of the Udacity Self-Driving Car Nanodegree Program. All the videos from the task description were process by the algorithm and the final result is presented in the video below.
 
-[![Click to view the video](https://img.youtube.com/vi/K4ZBT96A8VQ/0.jpg)](https://www.youtube.com/watch?v=K4ZBT96A8VQ)
+[![Click to view the video](https://github.com/joekidd/Finding-Lane-Lines-on-the-Road/blob/master/test_images_output/screen.png)](https://www.youtube.com/watch?v=K4ZBT96A8VQ)
+
+
+
+
+
 
 At the top of the video, you may find a visualization of each step of the pipeline.
 
