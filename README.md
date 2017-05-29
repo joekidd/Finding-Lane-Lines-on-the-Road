@@ -1,19 +1,12 @@
-# Finding Lane Lines on the-Road
-
-An implementation of the first project of the Udacity Self-Driving Car Nanodegree Program. All the videos from the task description were process by the algorithm and the final result is presented in the video below.
+# Finding Lane Lines on the road
 
 [![Click to view the video](https://github.com/joekidd/Finding-Lane-Lines-on-the-Road/blob/master/test_images_output/screen.png)](https://www.youtube.com/watch?v=K4ZBT96A8VQ)
 
-
-
-
-
-
-At the top of the video, you may find a visualization of each step of the pipeline.
+An implementation of the first project of the Udacity Self-Driving Car Nanodegree Program. All the videos from the task description (test_videos directory) were process by the algorithm and the final result is presented in the video above.
 
 ## Pipeline
 
-Each step of the algorithm is described below.
+Each step of the algorithm is described below. At the top of the video, you may find a visualization of each step of the pipeline.
 
 #### Region of interest
 
