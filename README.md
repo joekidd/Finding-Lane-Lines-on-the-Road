@@ -10,12 +10,14 @@ Here is a list of assumptions and observations, which are applied in the lane li
 
 1. I consider only current lane lines
 2. Lane lines are yellow, or white
-3. Current lane lines appear only in certain angles range
+3. Current lane lines appear only in certain range of angles
 4. Current lane lines might be approximated by a linear function
-5. Current lane lines might be distinguish by their slope analysis
+5. Current lane lines might be distinguished by the slope of linear function
 6. I consider only lane lines within defined region of interest
 
-Points (1), (2) and (6) don't need further explanation. Points (3), (4), (5) come from the nature of linear function. As this task, doesn't require considering curvature, linear function y = a * x + b is a good approximation. Left line might be distinguished from the right line, as the slope coefficients have different signs. The slope coefficient carries also the information about lines angles, therefore it used to abandon lines, which angle is further from the mean angle by more than three standard deviations. The angle mean was computed by processing all detected hough lines of given color within region of interest in each video file. 
+Points (1), (2) and (6) don't need further explanation. Points (3), (4), (5) come from the nature of linear function. As this task, doesn't require considering curvature, linear function y = a * x + b is a good approximation. Left line might be distinguished from the right line by considering signs of slope coefficients. Left line should have positive slope coefficient, right line should have negative one.
+
+The slope coefficient carries also the information about angles. Therefore, they are used to abandon lines, whose angle is further from the mean angle by more than three standard deviations. The angle mean was computed by processing all detected hough lines coressponding to line lanes from each video file. 
 
 ## Pipeline
 
@@ -42,7 +44,7 @@ def detect(self, image):
 
 #### Region of interest
 
-In the task of lane lines detection, we are only interested in the road surface part of the image, therefore, I define a region of interest, which covers this area. I can simply forget about the rest of the picture for now.
+In the task of lane lines detection, we are only interested in the road surface part of the image, therefore, I define a region of interest, which covers this area. I can simply forget about the rest of the picture for now. 
 
 #### Color based segmentation
 
@@ -61,7 +63,9 @@ However, I am interested only in the edges, that relate to the lines of the spec
 #### Hough transform for lines detection
 
 The output of the previous step is a direct input to the current one - edges representing shapes with specific colors.
-In order to detect actual lines, I I run hough transformation.
+In order to detect actual lines, I run hough transformation.
+
+#### Sorting lines
 
 For the purpose of the task, I can assume, there are only two lines, that I should worry about - left and right line of the current lane. Both lines can be approximated by a linear functions, where left line function has a different slope, than the right one.
 
@@ -74,12 +78,35 @@ The above steps are pretty basic and doesn't guarantee the algoritm to be robust
 
 In this step, I have lines sorted by their slope. For each line I get the 'start' and 'ending' points and those points are then used to approximate the 'solid' line, that is then displayed on the image. Simple linear regression is used to approximate the functions of the lines.
 
+
+#### Adding annotations
+As the last step, that is actually not really a part of the pipeline, I add the annotations, that might be seen at the top of the video. It helps analysing, what is really happening under the hood.
+
 ## Potential issues and fixes
 
-1. Not well suited for curvy lines 
-2. Color based
-3. It won't work well when there is an obstacle over a line
-4. What if the car changes lines?
+#### The algorithm is not well suited for curvy lines
+
+The algorithm is approximating the lines using linear functions. Therefore, it won't handle line curvatures. To create more general approach, a different way of aproximating lines would be needed (splines, polynomial, etc).
+
+#### Color based
+
+The color based segmentation is sufficient for the task, however it may be depended on the lightening conditions. Instead, I would suggest to create a filter, that exploits other properties of the lines: 
+- contrastive to the road surface
+- when transformed to IPM (inverse perspective mapping) the lines become parallel and vertical
+- they have similar lenght and width
+The filter should detect edges, that meets the above requirements. I hope to achieve that, for the next project of lane finding.
+
+#### Obstacles on lines
+
+When there is a car over line, the tracing algorithm stops working. Therefore we would a method to keep tracking the lines in such situation. When approach would be to use Kalman filter in order to approximate lines position on the base of previous observation.
+
+#### Tracking only current lane
+
+The algorithm would start creating suspicious results, when the car would try to change lanes. A solution would be to track not only the current lane, but also, adjacent lanes.
+
+#### Highway limited
+
+The algorithm should work well, but only in the conditions when the lines are cleary visible and there are no other artefacts on the road surface (scratches, holes, etc). Also there are no complicated lines patterns, such as appearing in cities.
 
 
 
