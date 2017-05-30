@@ -15,7 +15,7 @@ Here is a list of assumptions and observations, which are applied in the lane li
 5. Current lane lines might be distinguished by the slope of linear function
 6. I consider only lane lines within defined region of interest
 
-Points (1), (2) and (6) don't need further explanation. Points (3), (4), (5) come from the nature of linear function. As this task, doesn't require considering curvature, linear function y = a * x + b is a good approximation. Left line might be distinguished from the right line by considering signs of slope coefficients. Left line should have positive slope coefficient, right line should have negative one.
+Points (1), (2) and (6) don't need further explanation. Points (3), (4), (5) come from the nature of linear function. As this task, doesn't require considering curvature, linear function y = a * x + b is a sufficient approximation. Left line might be distinguished from the right line by considering signs of slope coefficients. Left line should have positive slope coefficient, right line should have negative one.
 
 The slope coefficient carries also the information about angles. Therefore, they are used to abandon lines, whose angle is further from the mean angle by more than three standard deviations. The angle mean was computed by processing all detected hough lines coressponding to line lanes from each video file. 
 
@@ -48,7 +48,7 @@ In the task of lane lines detection, we are only interested in the road surface 
 
 #### Color based segmentation
 
-The images in the videos, are mostly free of noises (except the 'challenge' video). Therefore, it seems reasonable to use lane lines colors for segmentation. In order to do that, I build HSV models of yellow and white colors, which represent the lines. Then, I leave on the image only those pixels, that are described by those models.
+Road surfaces in the videos, are mostly free of noises (except the 'challenge' video). Therefore, it seems reasonable to use lane lines colors for segmentation. In order to do that, I build HSV models of yellow and white colors, which represent the lines. Then, I leave only those pixels, that are described by those models.
 
 #### Canny edge detection
 
@@ -78,9 +78,8 @@ The above steps are pretty basic and doesn't guarantee the algoritm to be robust
 
 In this step, I have lines sorted by their slope. For each line I get the 'start' and 'ending' points and those points are then used to approximate the 'solid' line, that is then displayed on the image. Simple linear regression is used to approximate the functions of the lines.
 
-
 #### Adding annotations
-As the last step, that is actually not really a part of the pipeline, I add the annotations, that might be seen at the top of the video. It helps analysing, what is really happening under the hood.
+As the last step, that is actually not really a part of the pipeline, I add annotations, that might be seen at the top of the video. It helps analysing, what is really happening under the hood.
 
 ## Potential issues and fixes
 
@@ -94,19 +93,20 @@ The color based segmentation is sufficient for the task, however it may be depen
 - contrastive to the road surface
 - when transformed to IPM (inverse perspective mapping) the lines become parallel and vertical
 - they have similar lenght and width
+
 The filter should detect edges, that meets the above requirements. I hope to achieve that, for the next project of lane finding.
 
 #### Obstacles on lines
 
-When there is a car over line, the tracing algorithm stops working. Therefore we would a method to keep tracking the lines in such situation. When approach would be to use Kalman filter in order to approximate lines position on the base of previous observation.
+When there is a car over a line, the tracing algorithm stops working. Therefore I would need a method, which keeps tracking the lines in such situation. One approach would be to use Kalman filter in order to approximate lines position on the base of previous observation.
 
 #### Tracking only current lane
 
-The algorithm would start creating suspicious results, when the car would try to change lanes. A solution would be to track not only the current lane, but also, adjacent lanes.
+The algorithm would start creating suspicious results, when the car would try to change lanes. A solution would be to track not only the current lane, but also, adjacent lanes in order to provide smooth lane transition.
 
 #### Highway limited
 
-The algorithm should work well, but only in the conditions when the lines are cleary visible and there are no other artefacts on the road surface (scratches, holes, etc). Also there are no complicated lines patterns, such as appearing in cities.
+The algorithm should work well, but only in the conditions when the lines are cleary visible and there are no other artifacts on the road surface (scratches, holes, etc). Also there are no complicated lines patterns, such as appearing in cities.
 
 
 
